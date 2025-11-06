@@ -134,9 +134,11 @@ class FlutterAppInstallerPlugin: FlutterPlugin, MethodCallHandler, ActivityAware
 
     // Match both PackageInfo for there signatures
     return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-      sysPackageInfo.signatures[0] == targetPkgInfo.signatures[0]
+      val sysSign = sysPackageInfo.signatures?.getOrNull(0)
+      val targetSign = targetPkgInfo.signatures?.getOrNull(0)
+      sysSign != null && targetSign != null && sysSign == targetSign
     } else {
-      targetPkgInfo.signingInfo == sysPackageInfo.signingInfo
+      sysPackageInfo.signingInfo?.hasMultipleSigners() == targetPkgInfo.signingInfo?.hasMultipleSigners()
     }
   }
 
@@ -371,3 +373,4 @@ class FlutterAppInstallerPlugin: FlutterPlugin, MethodCallHandler, ActivityAware
     var errorMsg : String? = errorMsg
   }
 }
+
